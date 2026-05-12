@@ -48,7 +48,18 @@ outputs/
 Thumbs.db
 
 # Other
-refs.bib
-report.tex
 plot_metrics.py
 other/
+
+# reports
+refs.bib
+report.tex
+/build/
+/*.aux
+/*.bbl
+/*.blg
+/*.log
+/*.out
+/*.synctex.gz
+/*.fdb_latexmk
+/*.fls

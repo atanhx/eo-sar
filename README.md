@@ -10,7 +10,7 @@ Seven experiments progressed from a vanilla CNN baseline through domain-specific
 
 | Exp | Architecture/Method | Val F1 | Test F1 | Notes |
 |:---:|:-------------|:------:|:-------:|:------|
-| 1 | ResNet-34 (α=0.25) | 0.4325 | 0.0206 | Baseline |
+| 1 | ResNet-34 (α=0.25) | 0.4325 | 0.0165 | Baseline |
 | 2 | MiT-B2 (α=0.75) | **0.5686** | 0.0095 | Best validation |
 | 3 | ResNet-34 (α=0.75) | 0.5491 | 0.0363 | Improved training |
 | 4 | MiT-B2 + Domain Aug | 0.5637 | 0.0194 | Standard augmentation |
@@ -27,6 +27,7 @@ Seven experiments progressed from a vanilla CNN baseline through domain-specific
 - **Python:** 3.10+ (tested on 3.12, 3.13)
 - **PyTorch:** 2.x with CUDA support
 - **GPU:** NVIDIA GPU with 16 GB VRAM (Free T4 Google Colab, Free L4 Lightning Studio or better recommended)
+- **Dependencies:** All pinned dependencies are listed in `requirements.txt`.
 
 ## Environment Setup
 
@@ -92,9 +93,10 @@ Outputs (checkpoints, logs) are saved to `outputs/expN/`.
 ### Evaluation
 
 ```bash
-# Evaluate with validation-optimal threshold on test split
+# Evaluate on test data by passing the data path
 python src/eval.py \
     --config configs/config_exp6.yaml \
+    --data_path ./data \
     --weights outputs/exp6/checkpoints/exp6_best_checkpoint.pth \
     --split test --tune_threshold
 
