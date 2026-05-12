@@ -1,0 +1,65 @@
+# Experiment 7: SatlasPretrain Swin-V2-B + UNet decoder
+#
+# Replaces ImageNet pretraining with satellite-domain SatlasPretrain weights
+# (ICCV 2023). Uses the Sentinel-2 Swin-V2-B single-image RGB backbone,
+# pretrained on large-scale satellite imagery for remote sensing tasks.
+#
+# Architecture:
+#   [1×1 Conv: 4 >> 3ch] >> [Swin-V2-B backbone] >> [FPN 128ch] >> [UNet decoder]
+#
+# Training uses a 2-phase schedule:
+#   Phase 1 (epochs 1-10):  backbone + FPN frozen, only decoder trains
+#   Phase 2 (epochs 11-60): everything unfrozen at 10× lower LR
+#
+# Also includes all Exp6 domain-shift mitigations:
+#   - SAR instance normalisation
+#   - Channel dropout (p=0.1)
+#   - Continuous ±45 deg rotation
+#   - Enhanced SAR speckle noise
+
+data:
+  root: "data/"
+  patch_size: 512
+  num_workers: 4
+  use_weighted_sampler: true
+  no_change_sample_weight: 0.05
+
+model:
+  encoder_name: "satlas_swinb" # triggers SatlasPretrain code path
+  satlas_identifier: "Sentinel2_SwinB_SI_RGB"
+  encoder_weights: null # not used for Satlas (ignored)
+  in_channels: 4
+  classes: 1
+  weights_cache_dir: "weights_cache"
+
+training:
+  epochs: 60
+  batch_size: 4 # Swin-B is GPU-heavy, keep small
+  gradient_accumulation: 4 # effective batch = 4 × 4 = 16
+  learning_rate: 0.0004 # Phase 1 LR (decoder only)
+  weight_decay: 0.0001
+  optimizer: "adamw"
+  seed: 42
+  dice_weight: 1.0
+  focal_weight: 1.0
+  focal_alpha: 0.75
+  focal_gamma: 2.0
+  scheduler: "cosine"
+  freeze_epochs: 10 # Phase 1 duration
+  unfreeze_lr: 0.00001 # Phase 2 backbone LR (10× lower)
+
+augmentation:
+  horizontal_flip: true
+  vertical_flip: true
+  rotate_90: true
+  use_rotate: true
+  brightness_contrast: true
+  sar_noise_prob: 0.5
+  sar_noise_scale: 0.3
+  sar_instance_norm: true
+  channel_dropout_prob: 0.1
+
+paths:
+  checkpoint_dir: "outputs/exp7/checkpoints/"
+  log_dir: "outputs/exp7/logs/"
+  eval_output_dir: "outputs/exp7/evals/"

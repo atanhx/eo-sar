@@ -1,0 +1,19 @@
+# For CUDA 12.6:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+
+# Core deep learning
+segmentation-models-pytorch==0.5.0
+torch==2.11.0
+torchvision==0.26.0
+
+# Data loading and preprocessing
+albumentations==2.0.8
+tifffile==2025.3.30
+numpy==2.2.4
+
+# Visualisation
+matplotlib==3.10.1
+
+# Config and utilities
+PyYAML==6.0.2
+pandas==2.2.3

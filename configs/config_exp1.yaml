@@ -1,0 +1,37 @@
+# Experiment 1: ResNet-34 UNet baseline
+# No weighted sampler, focal_alpha=0.25. Establishes the performance floor.
+
+data:
+  root: "data/"
+  patch_size: 512
+  num_workers: 4
+
+model:
+  encoder_name: "resnet34"
+  encoder_weights: "imagenet"
+  in_channels: 4
+  classes: 1
+
+training:
+  epochs: 50
+  batch_size: 32
+  learning_rate: 0.0004
+  weight_decay: 0.0001
+  optimizer: "adamw"
+  seed: 42
+  dice_weight: 1.0
+  focal_weight: 1.0
+  focal_alpha: 0.25
+  focal_gamma: 2.0
+  scheduler: "cosine"
+
+augmentation:
+  horizontal_flip: true
+  vertical_flip: true
+  rotate_90: true
+  brightness_contrast: true
+
+paths:
+  checkpoint_dir: "outputs/exp1/checkpoints/"
+  log_dir: "outputs/exp1/logs/"
+  eval_output_dir: "outputs/exp1/evals/"

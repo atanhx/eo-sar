@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Package management
+uv.lock
+
+# Ruff
+.ruff_cache/
+
+# Byte output
+*.so
+*.egg
+
+# Distribution
+build/
+dist/
+
+# Dataset
+data/
+
+# Model checkpoints (hosted externally)
+checkpoints*/
+*.pth
+*.ckpt
+
+# SatlasPretrain downloaded weights cache
+weights_cache/
+
+# Experiment outputs (checkpoints, logs, evals — all reproduced by running experiments)
+outputs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Other
+refs.bib
+report.tex
+plot_metrics.py
+other/

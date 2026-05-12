@@ -1,0 +1,43 @@
+# Experiment 4: MiT-B2 with cross-scene domain augmentation
+# Adds continuous rotation, SAR multiplicative noise, and reduced oversampling
+# to improve generalization across geographic scenes.
+
+data:
+  root: "data/"
+  patch_size: 512
+  num_workers: 4
+  use_weighted_sampler: true
+  no_change_sample_weight: 0.1
+
+model:
+  encoder_name: "mit_b2"
+  encoder_weights: "imagenet"
+  in_channels: 4
+  classes: 1
+
+training:
+  epochs: 50
+  batch_size: 8
+  learning_rate: 0.0002
+  weight_decay: 0.0001
+  optimizer: "adamw"
+  seed: 42
+  dice_weight: 1.0
+  focal_weight: 1.0
+  focal_alpha: 0.75
+  focal_gamma: 2.0
+  scheduler: "cosine"
+
+augmentation:
+  horizontal_flip: true
+  vertical_flip: true
+  rotate_90: true
+  use_rotate: true
+  brightness_contrast: true
+  sar_noise_prob: 0.4
+  sar_noise_scale: 0.2
+
+paths:
+  checkpoint_dir: "outputs/exp4/checkpoints/"
+  log_dir: "outputs/exp4/logs/"
+  eval_output_dir: "outputs/exp4/evals/"
