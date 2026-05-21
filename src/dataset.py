@@ -1,7 +1,6 @@
 """Data loading, augmentation, and change-aware sampling for EO-SAR pairs."""
 
 from pathlib import Path
-from typing import Any
 
 import albumentations as A
 import numpy as np
@@ -9,7 +8,6 @@ import tifffile as tiff
 import torch
 from albumentations.pytorch import ToTensorV2
 from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
-from ty_extensions import Unknown
 
 
 def remap_labels(mask: np.ndarray) -> np.ndarray:
@@ -25,9 +23,7 @@ def remap_labels(mask: np.ndarray) -> np.ndarray:
     Returns:
         Binary ``uint8`` array with values in {0, 1}.
     """
-    binary: np.ndarray[tuple[Any, ...], np.dtype[Unknown]] = np.zeros_like(
-        mask, dtype=np.uint8
-    )
+    binary = np.zeros_like(mask, dtype=np.uint8)
     binary[mask == 2] = 1
     binary[mask == 3] = 1
     return binary
