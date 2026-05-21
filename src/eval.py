@@ -352,28 +352,28 @@ def find_best_threshold(
         Threshold value maximising validation F1.
     """
     model.eval()
-    all_logits, all_targets = [], []
     infer_fn = tta_inference if use_tta else sliding_window_inference
+
+    thresholds = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    all_metrics = {t: [] for t in thresholds}
+
+    print("\nThreshold sweep on validation set:")
+    print(f"{'Threshold':>10}  {'F1':>8}  {'Precision':>10}  {'Recall':>8}  {'IoU':>8}")
+    print("=" * 55)
 
     with torch.no_grad():
         for images, masks in loader:
             images = images.to(device)
+            masks = masks.to(device)
             logits = infer_fn(model, images)
-            all_logits.append(logits.cpu())
-            all_targets.append(masks.cpu())
+            for t in thresholds:
+                batch_metric = compute_metrics(logits, masks, threshold=t)
+                all_metrics[t].append(batch_metric)
 
-    all_logits = torch.cat(all_logits, dim=0)
-    all_targets = torch.cat(all_targets, dim=0)
-
-    thresholds = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
     best_f1, best_thresh = 0.0, 0.5
 
-    print("\nThreshold sweep on validation set:")
-    print(f"{'Threshold':>10}  {'F1':>8}  {'Precision':>10}  {'Recall':>8}  {'IoU':>8}")
-    print("-" * 55)
-
     for thresh in thresholds:
-        m = compute_metrics(all_logits, all_targets, threshold=thresh)
+        m = aggregate_metrics(all_metrics[thresh])
         print(
             f"{thresh:>10.2f}  {m['f1']:>8.4f}  {m['precision']:>10.4f}  {m['recall']:>8.4f}  {m['iou']:>8.4f}"
         )
