@@ -20,7 +20,7 @@
 data:
   root: "data/"
   patch_size: 512
-  num_workers: 4
+  num_workers: 2
   use_weighted_sampler: true
   no_change_sample_weight: 0.05
 
